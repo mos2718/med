@@ -11,16 +11,16 @@ MedicationRequest 藥物處方、MedicationDispense 配藥結果，以及其參�
 
 ### 各國藥品名稱對應
 - 基於 RxNorm
-- Task 1. 整理 範例 json 之各國語言對照表 
+- Task 1. 整理藥品範例 json 之各國語言對照表 
 
 
 
 ## Task 
-1. 整理 範例 json 之各國語言對照表 
-2. 癌病用藥，chatGPT 回應結果，不確定其內容( RxNorm 碼及藥品名)是否正確
+1. 整理藥品範例 json 之各國語言對照表 
+2. 針對癌病用藥，chatGPT 回應結果如下，不確定其內容( RxNorm 碼及藥品名)是否正確
 https://chatgpt.com/share/675a570b-03a4-8006-91b1-57feacd6f695
 3. 請提供 RxNorm codesystem、藥品代碼:1721560、英文藥物名稱：Osimertinib 之 JSON 範例，請分別提供英文、中文、印尼文之 JSON 範例，不確定其各國語言翻譯是否正確，需進一步確認
-4. chatGPT 產生 RxNorm API  debug
+4. 基於 NIH RxNorm API,  chatGPT 產生之藥名找代碼程式 OK , 代碼找藥名程式需  debug, 
 https://chatgpt.com/share/675a5c6c-d794-8006-86ce-af2f6b9da9e7
 
 
