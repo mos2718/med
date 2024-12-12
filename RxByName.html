@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RxNorm API Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        label, input, button {
+            font-size: 1.2em;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>RxNorm API Lookup</h1>
+    <p>輸入藥物名稱以查詢對應的 RxCUI：</p>
+    <form id="drugForm">
+        <label for="drugName">藥物名稱：</label>
+        <input type="text" id="drugName" required>
+        <button type="submit">查詢</button>
+    </form>
+
+    <div class="results" id="results"></div>
+
+    <script>
+        const form = document.getElementById('drugForm');
+        const resultsDiv = document.getElementById('results');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault(); // 防止表單提交刷新頁面
+            resultsDiv.innerHTML = ""; // 清除之前的結果
+
+            const drugName = document.getElementById('drugName').value.trim();
+            if (!drugName) {
+                resultsDiv.innerHTML = `<p class="error">請輸入藥物名稱。</p>`;
+                return;
+            }
+
+            const apiUrl = `https://rxnav.nlm.nih.gov/REST/rxcui.json?name=${encodeURIComponent(drugName)}`;
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`API 回應失敗，狀態碼：${response.status}`);
+                }
+
+                const data = await response.json();
+                const rxcui = data.idGroup?.rxnormId?.[0];
+
+                if (rxcui) {
+                    resultsDiv.innerHTML = `<p>藥物名稱：<strong>${drugName}</strong></p>
+                                            <p>對應的 RxCUI：<strong>${rxcui}</strong></p>`;
+                } else {
+                    resultsDiv.innerHTML = `<p class="error">找不到藥物名稱 "<strong>${drugName}</strong>" 的 RxCUI。</p>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="error">發生錯誤：${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RxNorm API Example: Lookup by RxCUI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        label, input, button {
+            font-size: 1.2em;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>RxNorm API Lookup</h1>
+    <p>輸入 RxNorm 碼 (RxCUI) 查詢藥物詳細資訊：</p>
+    <form id="rxnormForm">
+        <label for="rxcui">RxNorm 碼：</label>
+        <input type="text" id="rxcui" required pattern="\\d+" title="請輸入有效的數字">
+        <button type="submit">查詢</button>
+    </form>
+
+    <div class="results" id="results"></div>
+
+    <script>
+        const form = document.getElementById('rxnormForm');
+        const resultsDiv = document.getElementById('results');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault(); // 防止表單提交刷新頁面
+            resultsDiv.innerHTML = ""; // 清除之前的結果
+
+            const rxcui = document.getElementById('rxcui').value.trim();
+            if (!rxcui) {
+                resultsDiv.innerHTML = `<p class="error">請輸入 RxNorm 碼。</p>`;
+                return;
+            }
+
+            const apiUrl = `https://rxnav.nlm.nih.gov/REST/rxcui/${rxcui}/properties.json`;
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`API 回應失敗，狀態碼：${response.status}`);
+                }
+
+                const data = await response.json();
+                const properties = data.properties;
+
+                if (properties) {
+                    resultsDiv.innerHTML = `
+                        <p>RxCUI：<strong>${properties.rxcui}</strong></p>
+                        <p>藥物名稱：<strong>${properties.name}</strong></p>
+                        <p>同義詞：<strong>${properties.synonym || "無"}</strong></p>
+                        <p>類型 (TTY)：<strong>${properties.tty}</strong></p>
+                        <p>語言：<strong>${properties.language}</strong></p>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `<p class="error">找不到 RxNorm 碼 "<strong>${rxcui}</strong>" 的資訊。</p>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="error">發生錯誤：${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

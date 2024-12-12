@@ -1,0 +1,14 @@
+{
+    "resourceType": "Medication",
+    "code": {
+      "coding": [
+        {
+          "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+          "code": "1721560",
+          "display": "オシメルチニブ"
+        }
+      ],
+      "text": "オシメルチニブ"
+    }
+  }
+  
